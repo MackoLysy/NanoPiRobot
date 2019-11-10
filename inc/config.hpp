@@ -7,5 +7,6 @@
 #define IN2 5
 #define IN3 4
 #define IN4 1
+#define INTERRUPT_PIN 10
 #define DISPLAY_I2C_ADDR 0x27
 
