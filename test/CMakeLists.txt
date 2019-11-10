@@ -14,10 +14,10 @@ file(GLOB SOURCES
     "../src/*.cpp"
     )
 
-add_executable(unit_tests unit_tests.cpp ${SOURCES})
+add_executable(tests helpers_test.cpp esp_test.cpp ${SOURCES})
 
 target_link_libraries(
-    unit_tests
+    tests
     GTest::GTest 
     GTest::Main
     wiringPi
@@ -25,4 +25,4 @@ target_link_libraries(
     pthread
 )
 
-add_test(test_all unit_tests)
+add_test(test_all tests)
