@@ -8,7 +8,7 @@
 #include "helpers.hpp"
 #include "logger.hpp"
 #include "Distance.hpp"
-#include "motor.hpp"
+#include "motors.hpp"
 
 #include <iostream>
 #include <memory>
@@ -27,8 +27,7 @@ private:
     std::shared_ptr<IDisplay> m_display;
     Esp8266 m_esp8266;
     Distance m_distance;
-    std::shared_ptr<Motor> m_motorLeft;
-    std::shared_ptr<Motor> m_motorRight;
+    std::shared_ptr<Motors> m_motors;
     ce::ceSerial m_serial;
     bool m_success;
 

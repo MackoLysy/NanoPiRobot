@@ -6,8 +6,7 @@ Robot::Robot(/* args */)
     m_display = make_shared<HD44780_I2C>(DISPLAY_I2C_ADDR);
     GetWlanAddress();
     m_esp8266.SetIpCallback(std::bind(&Robot::SetEspIPcallback, this, std::placeholders::_1));
-    m_motorLeft = make_shared<Motor>(motor_left_pins);
-    m_motorRight = make_shared<Motor>(motor_right_pins);
+    m_motors = make_shared<Motors>();
 }
 
 Robot::~Robot()
@@ -35,8 +34,10 @@ void Robot::Start()
         // if (m_esp8266.isReady() && GetDataFromServer(data, dataToRead))
         if (m_esp8266.isReady())
         {
-            m_motorRight->moveFoward(10);
-            m_motorLeft->moveFoward(10);
+            m_motors->moveFoward(10);
+            m_motors->moveBackward(10);
+            m_motors->rotateLeft(10);
+            m_motors->rotateRight(10);
         }
     }
 }
