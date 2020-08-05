@@ -2,12 +2,12 @@
 
 Robot::Robot(/* args */)
 {
-
+    Logger::log("Creating");
     m_display = make_shared<HD44780_I2C>(DISPLAY_I2C_ADDR);
-    getWlanAddress();
-    auto f = std::bind(&Robot::setEspIPcallback, this, std::placeholders::_1);
-    m_esp8266.SetIpCallback(f);
-    m_distance.getDistance(90);
+    GetWlanAddress();
+    m_esp8266.SetIpCallback(std::bind(&Robot::SetEspIPcallback, this, std::placeholders::_1));
+    m_motorLeft = make_shared<Motor>(motor_left_pins);
+    m_motorRight = make_shared<Motor>(motor_right_pins);
 }
 
 Robot::~Robot()
@@ -17,30 +17,39 @@ Robot::~Robot()
 
 void Robot::Start()
 {
+    Logger::log("Starting Main loop!");
     if (m_serial.Open() != 0)
     {
-        Logger::log("Zjebalo sie w serialu!");
+        Logger::log("Zjebalo sie w huj wie co !");
         return;
     }
     m_esp8266.Init(&m_serial);
     while (1)
     {
-        //std::cout << "Waiting for Data..." << std::endl;
         auto data = m_serial.ReadString(m_success);
-        std::cout << data;
+        std::string dataToRead;
         if (m_success)
         {
             m_esp8266.HandleInputData(data);
         }
+        // if (m_esp8266.isReady() && GetDataFromServer(data, dataToRead))
+        if (m_esp8266.isReady())
+        {
+            m_motorRight->moveFoward(10);
+            m_motorLeft->moveFoward(10);
+        }
     }
 }
 
-void Robot::setEspIPcallback(std::string &ip)
+void Robot::SetEspIPcallback(std::string &ip)
 {
-    m_display->setEspIP(ip);
+    if (m_display != nullptr)
+    {
+        m_display->setEspIP(ip);
+    }
 }
 
-void Robot::getWlanAddress()
+void Robot::GetWlanAddress()
 {
     std::thread([&] {
         std::string temp;
@@ -56,7 +65,12 @@ void Robot::getWlanAddress()
                 break;
             }
         }
-        this->m_display->setWlanIP(temp);
+        Logger::log("Wifi:");
+        Logger::log(temp);
+        if (this->m_display != nullptr)
+        {
+            this->m_display->setWlanIP(temp);
+        }
     })
         .detach();
 }

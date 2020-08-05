@@ -8,6 +8,7 @@
 #include "helpers.hpp"
 #include "logger.hpp"
 #include "Distance.hpp"
+#include "motor.hpp"
 
 #include <iostream>
 #include <memory>
@@ -16,17 +17,21 @@
 
 class Robot
 {
-private:
-    std::shared_ptr<IDisplay> m_display;
-    Esp8266 m_esp8266;
-    Distance m_distance;
-    ce::ceSerial m_serial;
-    bool m_success;
 
-    void setEspIPcallback(std::string& ip);
-    void getWlanAddress();
 public:
     Robot(/* args */);
     ~Robot();
     void Start();
+
+private:
+    std::shared_ptr<IDisplay> m_display;
+    Esp8266 m_esp8266;
+    Distance m_distance;
+    std::shared_ptr<Motor> m_motorLeft;
+    std::shared_ptr<Motor> m_motorRight;
+    ce::ceSerial m_serial;
+    bool m_success;
+
+    void SetEspIPcallback(std::string &ip);
+    void GetWlanAddress();
 };

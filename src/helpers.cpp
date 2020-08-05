@@ -57,3 +57,24 @@ std::vector<std::string> split(const std::string &s, char delimiter)
     }
     return tokens;
 }
+
+
+bool GetDataFromServer(std::string &rawData, std::string &data)
+{
+    bool toPush = false;
+    if (rawData.find("+IPD") != std::string::npos)
+    {
+        for (std::string::iterator it = rawData.begin(); it != rawData.end(); ++it)
+        {
+            if (toPush)
+            {
+                data.push_back(*it);
+            }
+            if (*it == ':')
+            {
+                toPush = true;
+            }
+        }
+    }
+    return toPush;
+}

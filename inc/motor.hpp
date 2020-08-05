@@ -1,24 +1,17 @@
-#include "config.hpp"
-#include "logger.hpp"
+#pragma once
 
-#include <thread>
-#include <wiringPi.h>
-#include <softPwm.h>
 class Motor
 {
-private:
-    bool m_IsCounting;
-    int m_counter;
-    int m_valueToMove;
-    int m_prevVal;
-    int m_currVal;
-    void Interrupt();
-    void Init();
-public:
-    Motor(/* args */);
-    ~Motor();
-    void Stop();
-    void Start();
-    void setMoveValue(int val);
-};
 
+public:
+    Motor(const int *pins);
+    ~Motor();
+    void moveFoward(int distance);
+    void moveBackward(int distance);
+    void rotateForward(int angle);
+    void rotateBackward(int angle);
+    void stop();
+private:
+    int m_type;
+    const int *m_pins;
+};

@@ -1,6 +1,7 @@
 #include "esp8266.hpp"
 #include "config.hpp"
 #include <iostream>
+#include "logger.hpp"
 
 Esp8266::Esp8266()
 {
@@ -21,7 +22,6 @@ void Esp8266::Init(ce::ceSerial *serial)
 void Esp8266::WrtieCmd(std::string &data)
 {
     std::string value = data + "\r\n";
-    std::cout << "Sending" << value;
     m_serial->Write(value.c_str());
 }
 
@@ -61,7 +61,7 @@ void Esp8266::HandleReset(std::string &data)
 {
     if (data.find("ready") != std::string::npos)
     {
-        std::cout << "Restaring!" << std::endl;
+        Logger::log("Restaring!");
         m_status = Status::SETCWMODE;
         this->WrtieCmd("AT+CWMODE=1");
     }
@@ -71,7 +71,7 @@ void Esp8266::HandleCWMODE(std::string &data)
 {
     if (isOk(data))
     {
-        std::cout << "Connecting to WiFi" << std::endl;
+        Logger::log("Connecting to WiFi!");
         std::string cmd = "AT+CWJAP=\"" + std::string(WIFINANE) + "\",\"" + std::string(WIFIPASSWORD) + "\"";
         this->WrtieCmd(cmd);
         m_status = Status::HANDLEWIFICONNECTED;
@@ -82,7 +82,7 @@ void Esp8266::HandleWifiConneted(std::string &data)
 {
     if (isOk(data))
     {
-        std::cout << "Getting IP address" << std::endl;
+        Logger::log("Getting IP address");
         this->WrtieCmd("AT+CIFSR");
         m_status = Status::GETIP;
     }
@@ -93,7 +93,7 @@ void Esp8266::ParseIP(std::string &data)
     if (data.find("CIFSR:STAIP") != std::string::npos)
     {
         GetValueFromRecivedData(data, m_ip);
-        std::cout << "My ip: " << m_ip << std::endl;
+        Logger::log("My ip: " + m_ip);
         m_ipCallback(m_ip);
     }
     if (isOk(data))
@@ -134,6 +134,7 @@ void Esp8266::HanldeCPDInfo(std::string &data)
 {
     if (isOk(data))
     {
+        Logger::log("ESP READY! :D");
         WrtieCmd("AT+CIPDINFO=1");
         m_status = Status::READYTOREAD;
     }
