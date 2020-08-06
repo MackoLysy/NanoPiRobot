@@ -31,13 +31,9 @@ void Robot::Start()
         {
             m_esp8266.HandleInputData(data);
         }
-        // if (m_esp8266.isReady() && GetDataFromServer(data, dataToRead))
-        if (m_esp8266.isReady())
+        if (m_esp8266.isReady() && GetDataFromServer(data, dataToRead))
         {
-            m_motors->moveFoward(10);
-            m_motors->moveBackward(10);
-            m_motors->rotateLeft(10);
-            m_motors->rotateRight(10);
+            Logger::log(dataToRead);
         }
     }
 }
