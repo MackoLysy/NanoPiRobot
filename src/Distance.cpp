@@ -75,9 +75,10 @@ float Distance::getDistance(int angle)
 {
     moveServo(angle);
     delay(100);
-    sendPulse();
-    int time = pulseIn(ECHO, HIGH);
-    return time / 58.0;
+    return 10.0;
+    // sendPulse();
+    // int time = pulseIn(ECHO, HIGH);
+    // return time / 58.0;
 }
 
 void Distance::moveServo(int angle)

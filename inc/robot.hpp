@@ -9,6 +9,7 @@
 #include "logger.hpp"
 #include "Distance.hpp"
 #include "motors.hpp"
+#include "parser.hpp"
 
 #include <iostream>
 #include <memory>
@@ -29,8 +30,9 @@ private:
     Distance m_distance;
     std::shared_ptr<Motors> m_motors;
     ce::ceSerial m_serial;
-    bool m_success;
+    Parser m_parser;
 
+    bool m_success;
     void SetEspIPcallback(std::string &ip);
     void GetWlanAddress();
 };

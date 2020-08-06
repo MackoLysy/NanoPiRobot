@@ -14,7 +14,7 @@ file(GLOB SOURCES
     "../src/*.cpp"
     )
 
-add_executable(tests helpers_test.cpp esp_test.cpp robot_test.cpp ${SOURCES})
+add_executable(tests helpers_test.cpp esp_test.cpp robot_test.cpp parser_test.cpp ${SOURCES})
 
 target_link_libraries(
     tests

@@ -31,9 +31,10 @@ void Robot::Start()
         {
             m_esp8266.HandleInputData(data);
         }
-        if (m_esp8266.isReady() && GetDataFromServer(data, dataToRead))
+        if (m_esp8266.isReady() && GetDataFromServer(data, dataToRead) && m_parser.isValidJson(dataToRead))
         {
-            Logger::log(dataToRead);
+            auto type = m_parser.getString("type");
+            Logger::log("type");
         }
     }
 }
