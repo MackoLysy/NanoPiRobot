@@ -5,6 +5,19 @@
 
 class Esp8266
 {
+public:
+    Esp8266(/* args */);
+    void Init(ce::ceSerial *serial);
+    void HandleInputData(std::string &data);
+
+    void SetIpCallback(std::function<void(std::string &)> callback);
+    void writeData(std::string data);
+    bool isReady()
+    {
+        return m_status == Status::READYTOREAD;
+    }
+    ~Esp8266();
+
 private:
     enum class Status
     {
@@ -18,7 +31,6 @@ private:
     };
     Status m_status;
     std::string m_ip;
-    std::string m_port;
     std::string m_serverIp;
     std::string m_serverPort;
     ce::ceSerial *m_serial;
@@ -34,16 +46,4 @@ private:
     void SetUdpServer();
     void WrtieCmd(std::string &data);
     void WrtieCmd(const char *data);
-    
-public:
-    Esp8266(/* args */);
-    void Init(ce::ceSerial *serial);
-    void HandleInputData(std::string &data);
-    
-    void SetIpCallback(std::function<void(std::string &)> callback);
-    bool isReady()
-    {
-        return m_status == Status::READYTOREAD;
-    }
-    ~Esp8266();
 };

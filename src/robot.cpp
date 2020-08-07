@@ -1,6 +1,6 @@
 #include "robot.hpp"
 
-Robot::Robot(/* args */)
+Robot::Robot(/* args */) : m_state(State::IDLE)
 {
     Logger::log("Creating");
     m_display = make_shared<HD44780_I2C>(DISPLAY_I2C_ADDR);
@@ -27,18 +27,42 @@ void Robot::Start()
     {
         auto data = m_serial.ReadString(m_success);
         std::string dataToRead;
+        std::cout << "Inc message: " << data << endl;
         if (m_success)
         {
             m_esp8266.HandleInputData(data);
         }
         if (m_esp8266.isReady() && GetDataFromServer(data, dataToRead) && m_parser.isValidJson(dataToRead))
         {
-            auto type = m_parser.getString("type");
-            Logger::log("type");
+            setType(m_parser.getString("type"));
+            switch (m_state)
+            {
+            case State::IDLE:
+                break;
+            case State::INIT:
+                sendInitData();
+                break;
+            default:
+                break;
+            }
         }
     }
 }
 
+void Robot::setType(std::string type)
+{
+    if (type == "init")
+    {
+        m_state = State::INIT;
+        return;
+    }
+    m_state = State::IDLE;
+}
+void Robot::sendInitData()
+{
+    auto result = m_parser.createDocument()->addMember("type", "init")->addMember("error", 0)->toString();
+    m_esp8266.writeData(result);
+}
 void Robot::SetEspIPcallback(std::string &ip)
 {
     if (m_display != nullptr)
@@ -69,6 +93,6 @@ void Robot::GetWlanAddress()
         {
             this->m_display->setWlanIP(temp);
         }
-    })
+        })
         .detach();
 }

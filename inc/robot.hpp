@@ -31,8 +31,15 @@ private:
     std::shared_ptr<Motors> m_motors;
     ce::ceSerial m_serial;
     Parser m_parser;
-
+    enum class State
+    {
+        IDLE,
+        INIT,
+    };
+    State m_state;
     bool m_success;
     void SetEspIPcallback(std::string &ip);
+    void sendInitData();
+    void setType(std::string type);
     void GetWlanAddress();
 };

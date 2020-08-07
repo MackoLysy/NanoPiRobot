@@ -2,6 +2,7 @@
 #include "config.hpp"
 #include <iostream>
 #include "logger.hpp"
+#include <wiringPi.h>
 
 Esp8266::Esp8266()
 {
@@ -145,6 +146,15 @@ void Esp8266::SetIpCallback(std::function<void(std::string &)> callback)
     m_ipCallback = callback;
 }
 
+void Esp8266::writeData(std::string data)
+{
+    std::string s_size = std::to_string(data.length() + 2);
+    std::string query = "AT+CIPSEND=" + s_size + ",\"" + m_serverIp + "\"," + m_serverPort;
+    this->WrtieCmd(query);
+    delay(200);
+    this->WrtieCmd(data);
+}
+
 void Esp8266::SetServerIP(std::string &data)
 {
     if (data.find("+IPD") != std::string::npos)
@@ -156,7 +166,7 @@ void Esp8266::SetServerIP(std::string &data)
             auto port = split(items.at(3), ':');
             m_serverPort = port.at(0);
             WrtieCmd("AT+CIPDINFO=0");
-            std::cout << m_serverIp << " " << m_serverPort << std::endl;
+            std::cout << "Message from: "<< m_serverIp << " " << m_serverPort << std::endl;
         }
     }
 }
